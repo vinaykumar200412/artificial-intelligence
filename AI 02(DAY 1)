@@ -1,0 +1,33 @@
+def solve_n_queens(n):
+    def is_safe(board, row, col):
+        for i in range(row):
+            if board[i] == col or \
+               board[i] - i == col - row or \
+               board[i] + i == col + row:
+                return False
+        return True
+
+    def solve(board, row):
+        if row == n:
+            solutions.append(board[:])
+            return
+        for col in range(n):
+            if is_safe(board, row, col):
+                board[row] = col
+                solve(board, row + 1)
+
+    solutions = []
+    solve([0] * n, 0)
+    return solutions
+
+def print_solutions(solutions):
+    for solution in solutions:
+        for i in solution:
+            print('. ' * i + 'Q ' + '. ' * (len(solution) - i - 1))
+        print("\n")
+
+# Example usage
+n = int(input("Enter the number:"))
+solutions = solve_n_queens(n)
+print(f"Number of solutions: {len(solutions)}")
+print_solutions(solutions)
