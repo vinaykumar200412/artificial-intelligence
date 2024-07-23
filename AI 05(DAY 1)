@@ -1,0 +1,57 @@
+from collections import deque
+
+def is_valid(state):
+    m1, c1, boat, m2, c2 = state
+    if any(x < 0 for x in state):
+        return False
+    if m1 < c1 and m1 > 0:
+        return False
+    if m2 < c2 and m2 > 0:
+        return False
+    return True
+
+def get_successors(state):
+    m1, c1, boat, m2, c2 = state
+    moves = []
+    if boat == 1:
+        moves = [(m1 - 2, c1, 0, m2 + 2, c2),
+                 (m1, c1 - 2, 0, m2, c2 + 2),
+                 (m1 - 1, c1 - 1, 0, m2 + 1, c2 + 1),
+                 (m1 - 1, c1, 0, m2 + 1, c2),
+                 (m1, c1 - 1, 0, m2, c2 + 1)]
+    else:
+        moves = [(m1 + 2, c1, 1, m2 - 2, c2),
+                 (m1, c1 + 2, 1, m2, c2 - 2),
+                 (m1 + 1, c1 + 1, 1, m2 - 1, c2 - 1),
+                 (m1 + 1, c1, 1, m2 - 1, c2),
+                 (m1, c1 + 1, 1, m2, c2 - 1)]
+    return [move for move in moves if is_valid(move)]
+
+def missionaries_and_cannibals():
+    start_state = (3, 3, 1, 0, 0)
+    goal_state = (0, 0, 0, 3, 3)
+    queue = deque([(start_state, [])])
+    visited = set()
+
+    while queue:
+        (state, path) = queue.popleft()
+        if state in visited:
+            continue
+        visited.add(state)
+
+        if state == goal_state:
+            return path + [state]
+
+        for successor in get_successors(state):
+            queue.append((successor, path + [state]))
+
+    return None
+
+# Example usage
+solution = missionaries_and_cannibals()
+if solution:
+    print("Solution found:")
+    for step in solution:
+        print(step)
+else:
+    print("No solution found")
