@@ -1,0 +1,43 @@
+from collections import deque
+
+class VacuumCleaner:
+    def _init_(self, start, dirty_cells):
+        self.start = start
+        self.dirty_cells = set(dirty_cells)
+        self.visited = set()
+        self.queue = deque([(start, [])])
+
+    def get_successors(self, pos):
+        x, y = pos
+        moves = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
+        return [(nx, ny) for nx, ny in moves if 0 <= nx < 5 and 0 <= ny < 5]  # Assuming a 5x5 grid
+
+    def bfs(self):
+        while self.queue:
+            (pos, path) = self.queue.popleft()
+            if pos in self.visited:
+                continue
+            self.visited.add(pos)
+
+            if pos in self.dirty_cells:
+                self.dirty_cells.remove(pos)
+                if not self.dirty_cells:
+                    return path + [pos]
+
+            for next_pos in self.get_successors(pos):
+                self.queue.append((next_pos, path + [pos]))
+
+        return None
+
+# Example usage
+start_position = (0, 0)
+dirty_cells = [(1, 2), (2, 3), (3, 1)]
+vacuum = VacuumCleaner(start_position, dirty_cells)
+solution = vacuum.bfs()
+
+if solution:
+    print("Solution found:")
+    for step in solution:
+        print(step)
+else:
+    print("No solution found")
