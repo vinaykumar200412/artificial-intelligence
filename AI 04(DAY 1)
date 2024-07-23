@@ -1,0 +1,26 @@
+import itertools
+
+def is_valid_mapping(mapping):
+    send = mapping['S']*1000 + mapping['E']*100 + mapping['N']*10 + mapping['D']
+    more = mapping['M']*1000 + mapping['O']*100 + mapping['R']*10 + mapping['E']
+    money = mapping['M']*10000 + mapping['O']*1000 + mapping['N']*100 + mapping['E']*10 + mapping['Y']
+    return send + more == money
+
+def solve_cryptarithmetic():
+    letters = 'SENDMORY'
+    for perm in itertools.permutations(range(10), len(letters)):
+        mapping = dict(zip(letters, perm))
+        if mapping['S'] == 0 or mapping['M'] == 0:
+            continue
+        if is_valid_mapping(mapping):
+            return mapping
+    return None
+
+# Example usage
+solution = solve_cryptarithmetic()
+if solution:
+    print("Solution found:")
+    for letter, digit in solution.items():
+        print(f"{letter} = {digit}")
+else:
+    print("No solution found"
