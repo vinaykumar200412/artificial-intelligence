@@ -1,0 +1,49 @@
+def is_safe(graph, colors, node, color):
+    for neighbor in graph[node]:
+        if colors[neighbor] == color:
+            return False
+    return True
+
+def csp_backtracking(graph, colors, node, color_list):
+    if node is None:
+        return True
+    
+    for color in color_list:
+        if is_safe(graph, colors, node, color):
+            colors[node] = color
+            next_node = None
+            for n in graph:
+                if colors[n] is None:
+                    next_node = n
+                    break
+            if csp_backtracking(graph, colors, next_node, color_list):
+                return True
+            colors[node] = None
+
+    return False
+
+def map_coloring(graph, color_list):
+    colors = {node: None for node in graph}
+    start_node = next(iter(graph))
+    if csp_backtracking(graph, colors, start_node, color_list):
+        return colors
+    else:
+        return None
+
+
+graph = {
+    'A': ['B', 'C', 'D'],
+    'B': ['A', 'C'],
+    'C': ['A', 'B', 'D'],
+    'D': ['A', 'C']
+}
+
+color_list = ['Red', 'Green', 'Blue']
+
+# Call the map_coloring function
+solution = map_coloring(graph, color_list)
+if solution:
+    for region, color in solution.items():
+        print(f"{region}: {color}")
+else:
+    print("No solution found.")
