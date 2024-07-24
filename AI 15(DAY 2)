@@ -1,0 +1,47 @@
+class DecisionNode:
+    def _init_(self, question, true_branch, false_branch):
+        self.question = question
+        self.true_branch = true_branch
+        self.false_branch = false_branch
+
+class Leaf:
+    def _init_(self, value):
+        self.value = value
+
+def classify(node, instance):
+    if isinstance(node, Leaf):
+        return node.value
+
+    if node.question(instance):
+        return classify(node.true_branch, instance)
+    else:
+        return classify(node.false_branch, instance)
+
+def is_sunny(instance):
+    return instance['weather'] == 'sunny'
+
+def is_windy(instance):
+    return instance['wind'] == 'strong'
+
+def is_rainy(instance):
+    return instance['weather'] == 'rainy'
+
+leaf_play = Leaf('Play')
+leaf_dont_play = Leaf('Don\'t Play')
+
+root = DecisionNode(is_sunny, None, None)
+
+root.true_branch = DecisionNode(is_windy, leaf_dont_play, leaf_play)
+root.false_branch = DecisionNode(is_rainy, leaf_dont_play, leaf_play)
+
+example_instance = {'weather': 'sunny', 'wind': 'strong'}
+print("Decision:", classify(root, example_instance)) 
+
+example_instance = {'weather': 'sunny', 'wind': 'weak'}
+print("Decision:", classify(root, example_instance))
+
+example_instance = {'weather': 'rainy', 'wind': 'weak'}
+print("Decision:", classify(root, example_instance))  
+
+example_instance = {'weather': 'cloudy', 'wind': 'weak'}
+print("Decision:", classify(root, example_instance))  
